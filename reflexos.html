@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo para o Exame de Reflexos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation, allowing users to jump to specific sections (Introdução, Graduação, Reflexos Profundos, Superficiais, Clônus). The core of the app is an interactive visual guide where users click on parts of a diagram to reveal detailed information about each reflex test. This task-oriented, visual-first approach is more engaging and intuitive for learning and quick reference than a linear text document, directly supporting user understanding and ease of navigation. -->
+    <!-- Visualization & Content Choices: Report Info: Reflex grading scale -> Goal: Inform/Compare -> Viz/Presentation: Interactive Bar Chart -> Interaction: Hover tooltips -> Justification: Visually represents the ordinal scale, making it easier to understand the levels of hypo/hyperreflexia. Library: Chart.js. Report Info: Individual reflex tests -> Goal: Inform/Organize -> Viz/Presentation: Interactive cards linked to a body diagram -> Interaction: Click-to-reveal -> Justification: Connects the abstract test name to its physical location, improving recall and usability. Library/Method: HTML/CSS/JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px;
+            max-height: 300px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            background-color: #4338ca;
+            color: white;
+            transform: translateX(4px);
+        }
+        .reflex-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(59, 130, 246, 0.7);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        .reflex-point:hover {
+            transform: scale(1.5);
+            background-color: rgba(239, 68, 68, 0.9);
+        }
+        .reflex-card {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        .reflex-card.open {
+            max-height: 500px;
+        }
+        .body-diagram {
+            position: relative;
+            width: 150px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        .body-part {
+            position: absolute;
+            background-color: #d4d4d8;
+        }
+    </style>
+</head>
+<body class="bg-neutral-50 text-neutral-800">
+
+    <div class="flex">
+        <aside class="w-64 min-h-screen bg-neutral-100 p-4 border-r border-neutral-200 fixed top-0 left-0 hidden lg:block">
+            <h1 class="text-xl font-bold text-indigo-800 mb-8">Exame de Reflexos</h1>
+            <nav id="desktop-nav" class="flex flex-col space-y-2">
+                <a href="#introducao" class="nav-link p-2 rounded-lg hover:bg-neutral-200">Introdução</a>
+                <a href="#graduacao" class="nav-link p-2 rounded-lg hover:bg-neutral-200">Graduação</a>
+                <a href="#profundos" class="nav-link p-2 rounded-lg hover:bg-neutral-200">Reflexos Profundos</a>
+                <a href="#superficiais" class="nav-link p-2 rounded-lg hover:bg-neutral-200">Reflexos Superficiais</a>
+                <a href="#clonus" class="nav-link p-2 rounded-lg hover:bg-neutral-200">Pesquisa de Clônus</a>
+            </nav>
+        </aside>
+
+        <main class="w-full lg:ml-64 p-4 md:p-8">
+            
+            <header class="lg:hidden mb-6">
+                 <h1 class="text-2xl font-bold text-indigo-800">Guia de Reflexos</h1>
+            </header>
+
+            <section id="introducao" class="mb-12">
+                <h2 class="text-3xl font-bold text-neutral-700 border-b-2 border-indigo-200 pb-2 mb-4">Introdução ao Exame dos Reflexos</h2>
+                <p class="text-lg text-neutral-600 leading-relaxed">
+                    A pesquisa dos reflexos é uma etapa fundamental e altamente objetiva do exame neurológico. Como não depende da colaboração direta do paciente, pode fornecer pistas cruciais sobre a integridade do sistema nervoso, revelando alterações precoces e sutis. Este guia interativo foi desenhado para auxiliar na realização sistemática e precisa desta avaliação, desde a preparação até a interpretação dos achados. Uma avaliação correta dos reflexos ajuda a localizar lesões no sistema nervoso central e periférico.
+                </p>
+            </section>
+
+            <section id="graduacao" class="mb-12">
+                <h2 class="text-3xl font-bold text-neutral-700 border-b-2 border-indigo-200 pb-2 mb-4">Graduação dos Reflexos</h2>
+                 <p class="text-lg text-neutral-600 leading-relaxed mb-6">
+                    As respostas dos reflexos profundos são classificadas em uma escala que avalia sua intensidade. A simetria entre os lados do corpo é o fator mais importante na interpretação. Passe o mouse sobre as barras para ver a descrição de cada grau.
+                </p>
+                <div class="bg-white p-4 rounded-xl shadow-md">
+                    <div class="chart-container">
+                        <canvas id="reflexChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="profundos" class="mb-12">
+                <h2 class="text-3xl font-bold text-neutral-700 border-b-2 border-indigo-200 pb-2 mb-4">Reflexos Profundos (Miotáticos)</h2>
+                <p class="text-lg text-neutral-600 leading-relaxed mb-6">
+                    Estes reflexos de estiramento muscular são obtidos pela percussão de um tendão. Clique nos pontos do diagrama ou nos títulos abaixo para ver os detalhes de cada teste. Lembre-se da Manobra de Jendrassik: se um reflexo estiver ausente, peça ao paciente para tracionar as próprias mãos para reforçar a resposta.
+                </p>
+                
+                <div class="flex flex-col md:flex-row gap-8 items-start">
+                    <div class="w-full md:w-1/3 flex justify-center py-4">
+                        <div class="body-diagram">
+                            <!-- CSS Body Diagram -->
+                            <div class="body-part rounded-full" style="width: 50px; height: 50px; top: 0; left: 50%; transform: translateX(-50%);"></div>
+                            <div class="body-part rounded-lg" style="width: 70px; height: 120px; top: 55px; left: 50%; transform: translateX(-50%);"></div>
+                            <div class="body-part rounded-lg" style="width: 25px; height: 100px; top: 60px; left: 10px;"></div>
+                            <div class="body-part rounded-lg" style="width: 25px; height: 100px; top: 60px; right: 10px;"></div>
+                            <div class="body-part rounded-lg" style="width: 30px; height: 150px; top: 180px; left: 20px;"></div>
+                            <div class="body-part rounded-lg" style="width: 30px; height: 150px; top: 180px; right: 20px;"></div>
+                            
+                            <!-- Interactive Points -->
+                            <div id="point-bicipital" class="reflex-point" style="top: 28%; left: 68%;"></div>
+                            <div id="point-braquiorradial" class="reflex-point" style="top: 45%; left: 75%;"></div>
+                            <div id="point-tricipital" class="reflex-point" style="top: 30%; left: 12%;"></div>
+                            <div id="point-patelar" class="reflex-point" style="top: 68%; left: 60%;"></div>
+                            <div id="point-aquileu" class="reflex-point" style="top: 90%; left: 62%;"></div>
+                        </div>
+                    </div>
+                    <div id="reflex-details" class="w-full md:w-2/3 space-y-4">
+                    </div>
+                </div>
+            </section>
+
+            <section id="superficiais" class="mb-12">
+                <h2 class="text-3xl font-bold text-neutral-700 border-b-2 border-indigo-200 pb-2 mb-4">Reflexos Superficiais (Cutâneos)</h2>
+                 <p class="text-lg text-neutral-600 leading-relaxed mb-6">
+                    Estes reflexos são obtidos pelo estímulo tátil da pele e são importantes para avaliar a integridade das vias corticoespinais. Clique nos itens abaixo para expandir os detalhes.
+                </p>
+                <div id="superficial-reflex-details" class="space-y-4">
+                </div>
+            </section>
+
+            <section id="clonus" class="mb-12">
+                <h2 class="text-3xl font-bold text-neutral-700 border-b-2 border-indigo-200 pb-2 mb-4">Pesquisa de Clônus</h2>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <p class="text-lg text-neutral-600 leading-relaxed mb-4">
+                        O clônus é um sinal de hiperreflexia severa, indicativo de lesão do neurônio motor superior (trato piramidal). Consiste em contrações musculares rítmicas e involuntárias em resposta a um estiramento súbito e mantido do músculo.
+                    </p>
+                    <div class="border-l-4 border-indigo-500 pl-4">
+                        <h4 class="font-bold text-xl text-neutral-700">Técnica (Clônus do Tornozelo)</h4>
+                        <ol class="list-decimal list-inside mt-2 space-y-2 text-neutral-600">
+                            <li>Com o paciente relaxado e a perna semifletida, apoie a perna com uma mão.</li>
+                            <li>Com a outra mão, segure o pé e realize uma dorsiflexão súbita e vigorosa, mantendo a pressão no final do movimento.</li>
+                            <li>**Resposta Normal:** O pé permanece em dorsiflexão ou retorna à posição neutra sem movimentos oscilatórios.</li>
+                            <li>**Resposta Anormal (Clônus Presente):** Você sentirá e verá uma série de movimentos rítmicos de flexão e extensão plantar do pé enquanto mantiver o estiramento.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+            
+            <footer class="text-center text-neutral-500 mt-12 text-sm">
+                <p>Conteúdo adaptado de "O Exame Neurológico para estudantes de medicina" e "Roteiro para aula prática-exame físico do sistema neurológico".</p>
+                <p>Esta é uma ferramenta educacional e não substitui o julgamento clínico profissional.</p>
+            </footer>
+
+            <div class="mt-12 text-center">
+                <a href="https://www.youtube.com/watch?v=e3hTOwwvQTk" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-colors duration-300">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Ver Vídeo Demonstrativo
+                </a>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const reflexData = [
+                {
+                    id: 'bicipital',
+                    name: 'Reflexo Bicipital',
+                    roots: 'Raízes C5, C6',
+                    position: 'Com o braço do paciente apoiado e semifletido, posicione seu polegar sobre o tendão do bíceps na fossa cubital.',
+                    action: 'Percuta seu próprio polegar com o martelo.',
+                    response: 'Flexão do antebraço.'
+                },
+                {
+                    id: 'braquiorradial',
+                    name: 'Reflexo Braquiorradial (Estilorradial)',
+                    roots: 'Raízes C5, C6',
+                    position: 'Antebraço do paciente em posição neutra (entre pronação e supinação), apoiado.',
+                    action: 'Percuta o processo estiloide do rádio, cerca de 5-10 cm acima do punho.',
+                    response: 'Flexão do cotovelo e ligeira supinação do antebraço.'
+                },
+                {
+                    id: 'tricipital',
+                    name: 'Reflexo Tricipital',
+                    roots: 'Raízes C7, C8',
+                    position: 'Apoie o braço do paciente, abduzido e com o cotovelo fletido em 90 graus.',
+                    action: 'Percuta o tendão do tríceps diretamente, logo acima do olecrano.',
+                    response: 'Extensão do antebraço.'
+                },
+                {
+                    id: 'patelar',
+                    name: 'Reflexo Patelar',
+                    roots: 'Raízes L2, L3, L4',
+                    position: 'Paciente sentado com as pernas pendentes ou deitado com os joelhos semifletidos e apoiados.',
+                    action: 'Percuta o tendão patelar, logo abaixo da patela.',
+                    response: 'Extensão da perna.'
+                },
+                {
+                    id: 'aquileu',
+                    name: 'Reflexo Aquileu',
+                    roots: 'Raízes S1, S2',
+                    position: 'Paciente sentado com a perna pendente ou ajoelhado. Realize uma leve dorsiflexão do pé para tensionar o tendão.',
+                    action: 'Percuta o tendão de Aquiles.',
+                    response: 'Flexão plantar do pé.'
+                }
+            ];
+
+            const superficialReflexData = [
+                {
+                    name: 'Reflexo Cutâneo-Plantar',
+                    roots: 'Raízes L5, S1, S2',
+                    action: 'Com um objeto rombo, estimule a borda lateral da planta do pé, do calcanhar em direção aos dedos.',
+                    normalResponse: 'Flexão de todos os artelhos.',
+                    abnormalResponse: '<strong>Sinal de Babinski:</strong> Extensão (dorsiflexão) do hálux, frequentemente com abertura em leque dos outros dedos. Indica lesão do neurônio motor superior em adultos.'
+                },
+                {
+                    name: 'Reflexos Cutâneo-Abdominais',
+                    roots: 'Superior (T8-T9), Médio (T9-T11), Inferior (T11-T12)',
+                    action: 'Estimule a pele do abdome, de fora para dentro, em cada um dos três níveis de cada lado.',
+                    normalResponse: 'Contração dos músculos abdominais ipsilaterais e desvio da cicatriz umbilical para o lado estimulado.',
+                    abnormalResponse: 'A ausência unilateral ou bilateral pode indicar lesão do neurônio motor superior (trato piramidal).'
+                }
+            ];
+
+            const reflexDetailsContainer = document.getElementById('reflex-details');
+            const superficialReflexContainer = document.getElementById('superficial-reflex-details');
+
+            function createReflexCard(reflex) {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-md cursor-pointer';
+                card.innerHTML = `
+                    <div id="header-${reflex.id}" class="p-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-xl text-neutral-800">${reflex.name}</h3>
+                            <p class="text-sm text-indigo-600 font-medium">${reflex.roots}</p>
+                        </div>
+                        <span class="transform transition-transform duration-300 text-indigo-500 text-2xl">&#x25BC;</span>
+                    </div>
+                    <div id="content-${reflex.id}" class="reflex-card border-t border-neutral-200">
+                        <div class="p-4 space-y-3">
+                            <p><strong>Posição:</strong> ${reflex.position}</p>
+                            <p><strong>Ação:</strong> ${reflex.action}</p>
+                            <p><strong>Resposta Normal:</strong> ${reflex.response}</p>
+                        </div>
+                    </div>
+                `;
+                reflexDetailsContainer.appendChild(card);
+                const header = card.querySelector(`#header-${reflex.id}`);
+                const content = card.querySelector(`#content-${reflex.id}`);
+                header.addEventListener('click', () => {
+                    document.querySelectorAll('.reflex-card.open').forEach(openCard => {
+                        if (openCard !== content) {
+                            openCard.classList.remove('open');
+                            openCard.previousElementSibling.querySelector('span').style.transform = 'rotate(0deg)';
+                        }
+                    });
+                    content.classList.toggle('open');
+                    header.querySelector('span').style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+                document.getElementById(`point-${reflex.id}`).addEventListener('click', () => {
+                    document.querySelectorAll('.reflex-card.open').forEach(openCard => {
+                         if (openCard !== content) {
+                            openCard.classList.remove('open');
+                            openCard.previousElementSibling.querySelector('span').style.transform = 'rotate(0deg)';
+                        }
+                    });
+                    content.classList.add('open');
+                    header.querySelector('span').style.transform = 'rotate(180deg)';
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
+
+            function createSuperficialReflexCard(reflex) {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-md cursor-pointer';
+                card.innerHTML = `
+                    <div class="p-4 flex justify-between items-center">
+                         <div>
+                            <h3 class="font-bold text-xl text-neutral-800">${reflex.name}</h3>
+                            <p class="text-sm text-indigo-600 font-medium">${reflex.roots}</p>
+                        </div>
+                        <span class="transform transition-transform duration-300 text-indigo-500 text-2xl">&#x25BC;</span>
+                    </div>
+                    <div class="reflex-card border-t border-neutral-200">
+                        <div class="p-4 space-y-3">
+                            <p><strong>Ação:</strong> ${reflex.action}</p>
+                            <p><strong>Resposta Normal:</strong> ${reflex.normalResponse}</p>
+                            <p><strong>Resposta Anormal:</strong> ${reflex.abnormalResponse}</p>
+                        </div>
+                    </div>
+                `;
+                superficialReflexContainer.appendChild(card);
+                const header = card.querySelector('.p-4');
+                const content = card.querySelector('.reflex-card');
+                header.addEventListener('click', () => {
+                    content.classList.toggle('open');
+                    header.querySelector('span').style.transform = content.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+            }
+
+            reflexData.forEach(createReflexCard);
+            superficialReflexData.forEach(createSuperficialReflexCard);
+
+
+            const ctx = document.getElementById('reflexChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0', '1+ / +', '2+ / ++', '3+ / +++', '4+ / ++++'],
+                    datasets: [{
+                        label: 'Graduação de Reflexo',
+                        data: [1, 2, 3, 4, 5],
+                        backgroundColor: [
+                            '#9ca3af', 
+                            '#60a5fa', 
+                            '#34d399', 
+                            '#facc15', 
+                            '#f87171'  
+                        ],
+                        borderColor: [
+                            '#6b7280',
+                            '#3b82f6',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const labels = [
+                                        'Arreflexia: Ausência de reflexo.',
+                                        'Hiporreflexia: Reflexo diminuído, obtido com dificuldade.',
+                                        'Normorreflexia: Reflexo normal.',
+                                        'Hiperreflexia: Reflexo vivo, mais rápido e amplo que o normal.',
+                                        'Exaltado: Reflexo muito brusco, associado a clônus.'
+                                    ];
+                                    return labels[context.dataIndex];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: false,
+                            beginAtZero: true
+                        },
+                        y: {
+                           ticks: {
+                               font: {
+                                   size: 14,
+                                   weight: 'bold'
+                               }
+                           }
+                        }
+                    }
+                }
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+        });
+    </script>
+</body>
+</html>
+

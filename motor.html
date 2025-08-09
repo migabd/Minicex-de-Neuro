@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo do Exame Motor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Slate background, Muted Blue accent) -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling application with a sticky top navigation for quick access to the 6 main sections of the motor exam. The structure follows the logical sequence of the physical exam. Interactivity is focused on clarifying complex concepts (e.g., canvas animations for maneuvers and signs) and comparing information (e.g., interactive tables and a chart for motor syndromes), enhancing usability and learning over a static document. -->
+    <!-- Visualization & Content Choices: Inspeção/Palpação -> Goal: Inform -> Method: HTML Cards -> Interaction: Hover -> Justification: Organized text. Tônus -> Goal: Explain -> Method: Canvas animation -> Interaction: Button click -> Justification: Visual demonstration of signs. Força -> Goal: Inform -> Method: Interactive HTML Table -> Interaction: Hover/Click -> Justification: Engaging data presentation. Manobras -> Goal: Demonstrate -> Method: Canvas animations -> Interaction: Tab selection -> Justification: Superior to static images for teaching physical tests. Síndromes -> Goal: Compare -> Method: Chart.js Bar Chart -> Interaction: View toggle -> Justification: Alternative visual comparison of data. CONFIRMING NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+        }
+        .nav-link.active {
+            color: #0369a1; /* sky-700 */
+            border-bottom-color: #0369a1;
+        }
+        .tab-button.active {
+            background-color: #0369a1; /* sky-700 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-3">
+                <h1 class="text-xl font-bold text-slate-900">Guia do Exame Motor</h1>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#inspecao" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Inspeção</a>
+                    <a href="#palpacao" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Palpação</a>
+                    <a href="#tonus" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Tônus</a>
+                    <a href="#forca" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Força</a>
+                    <a href="#manobras" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Manobras</a>
+                    <a href="#sindromes" class="nav-link text-slate-600 hover:text-sky-700 border-b-2 border-transparent pb-1">Síndromes</a>
+                </div>
+                 <div class="md:hidden">
+                    <select id="mobile-nav" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-sky-500 focus:ring-sky-500 sm:text-sm">
+                        <option value="#inspecao">Inspeção</option>
+                        <option value="#palpacao">Palpação</option>
+                        <option value="#tonus">Tônus</option>
+                        <option value="#forca">Força</option>
+                        <option value="#manobras">Manobras</option>
+                        <option value="#sindromes">Síndromes</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="inspecao" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">1. Inspeção</h2>
+            <p class="text-lg text-slate-600 mb-8">A primeira etapa é a observação atenta do paciente, buscando sinais visuais de anormalidades motoras.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl mb-2 text-sky-800">Trofismo Muscular</h3>
+                    <p>Observe o volume dos músculos. Procure por sinais de <span class="font-semibold">atrofia</span> (diminuição da massa) ou <span class="font-semibold">hipertrofia</span>. Compare sempre a simetria entre os membros.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl mb-2 text-sky-800">Postura e Atitudes</h3>
+                    <p>Verifique a postura geral do paciente em repouso e em movimento. Note posições anormais dos membros ou do tronco, que podem indicar problemas neurológicos subjacentes.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-shadow">
+                    <h3 class="font-bold text-xl mb-2 text-sky-800">Movimentos Involuntários</h3>
+                    <p>Procure pela presença de movimentos que o paciente não controla, como <span class="font-semibold">fasciculações, tremores, coreia ou distonia</span>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="palpacao" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">2. Palpação</h2>
+            <p class="text-lg text-slate-600 mb-8">Toque os grupos musculares para avaliar sua consistência e sensibilidade.</p>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="font-bold text-xl mb-2 text-sky-800">Consistência Muscular</h3>
+                <p>Músculos normais têm uma consistência firme e elástica. Em casos de <span class="font-semibold">hipotonia</span>, podem parecer flácidos. Em <span class="font-semibold">hipertonias</span>, podem estar rígidos e endurecidos. Em certas condições, como miosites, a palpação pode ser dolorosa.</p>
+            </div>
+        </section>
+
+        <section id="tonus" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">3. Avaliação do Tônus Muscular</h2>
+            <p class="text-lg text-slate-600 mb-8">O tônus é a resistência do músculo ao estiramento passivo. Peça ao paciente para relaxar completamente o membro a ser testado.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-xl mb-2 text-sky-800">Espasticidade (Sinal do Canivete)</h3>
+                    <p class="mb-4">Típica da lesão piramidal. A resistência é maior no início do movimento e cede subitamente. A animação demonstra o movimento passivo de um membro com espasticidade.</p>
+                    <div class="chart-container h-48 max-h-48">
+                        <canvas id="caniveteCanvas"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-xl mb-2 text-sky-800">Rigidez (Sinal da Roda Denteada)</h3>
+                    <p class="mb-4">Típica da lesão extrapiramidal (ex: Parkinson). A resistência é constante, com interrupções rítmicas. A animação ilustra essa resistência "em degraus".</p>
+                    <div class="chart-container h-48 max-h-48">
+                        <canvas id="rodaDenteadaCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="forca" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">4. Avaliação da Força Muscular</h2>
+            <p class="text-lg text-slate-600 mb-8">Teste a capacidade do paciente de realizar movimentos contra a resistência. A força é graduada pela escala do Medical Research Council (MRC).</p>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="p-4 font-bold text-sky-800">Grau</th>
+                            <th class="p-4 font-bold text-sky-800">Descrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-t"><td class="p-4 font-semibold">0</td><td class="p-4">Nenhuma contração muscular visível ou palpável.</td></tr>
+                        <tr class="border-t bg-slate-50"><td class="p-4 font-semibold">1</td><td class="p-4">Contração muscular visível/palpável, mas sem movimento do membro.</td></tr>
+                        <tr class="border-t"><td class="p-4 font-semibold">2</td><td class="p-4">Movimento ativo do membro, mas apenas com a eliminação da gravidade.</td></tr>
+                        <tr class="border-t bg-slate-50"><td class="p-4 font-semibold">3</td><td class="p-4">Movimento ativo contra a gravidade, mas não vence resistência.</td></tr>
+                        <tr class="border-t"><td class="p-4 font-semibold">4</td><td class="p-4">Movimento ativo contra a gravidade e vence alguma resistência.</td></tr>
+                        <tr class="border-t bg-slate-50"><td class="p-4 font-semibold">5</td><td class="p-4">Força muscular normal, vence a resistência máxima do examinador.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="manobras" class="mb-16 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">5. Manobras Deficitárias</h2>
+            <p class="text-lg text-slate-600 mb-8">Essenciais para detectar déficits de força leves (paresias). Interaja com as abas para ver a descrição e a animação de cada manobra.</p>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="mb-4 border-b border-slate-200">
+                    <nav class="flex space-x-4" id="manobras-tabs">
+                        <button data-target="manobra-mingazzini-sup" class="tab-button py-2 px-4 rounded-t-lg font-semibold active">Mingazzini (Sup)</button>
+                        <button data-target="manobra-mingazzini-inf" class="tab-button py-2 px-4 rounded-t-lg font-semibold">Mingazzini (Inf)</button>
+                        <button data-target="manobra-barre" class="tab-button py-2 px-4 rounded-t-lg font-semibold">Barré</button>
+                    </nav>
+                </div>
+                <div id="manobras-content">
+                    <div id="manobra-mingazzini-sup" class="manobra-pane">
+                        <div class="grid md:grid-cols-2 gap-6 items-center">
+                            <div>
+                                <h3 class="font-bold text-xl mb-2 text-sky-800">Manobra de Mingazzini (Membros Superiores)</h3>
+                                <p><span class="font-semibold">Como fazer:</span> Paciente sentado ou em pé, estende os braços para a frente com as palmas para cima e os dedos afastados. Manter por 30-60s.</p>
+                                <p class="mt-2"><span class="font-semibold">Achado (Déficit):</span> O membro afetado tende a oscilar, pronar (girar a palma para baixo) e cair progressivamente.</p>
+                            </div>
+                            <div class="chart-container h-56 max-h-56">
+                                <canvas id="mingazziniSupCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="manobra-mingazzini-inf" class="manobra-pane hidden">
+                        <div class="grid md:grid-cols-2 gap-6 items-center">
+                             <div>
+                                <h3 class="font-bold text-xl mb-2 text-sky-800">Manobra de Mingazzini (Membros Inferiores)</h3>
+                                <p><span class="font-semibold">Como fazer:</span> Paciente em decúbito dorsal, flete as coxas sobre a bacia e as pernas sobre as coxas (90°).</p>
+                                <p class="mt-2"><span class="font-semibold">Achado (Déficit):</span> O membro afetado irá oscilar e cair.</p>
+                            </div>
+                            <div class="chart-container h-56 max-h-56">
+                                <canvas id="mingazziniInfCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="manobra-barre" class="manobra-pane hidden">
+                        <div class="grid md:grid-cols-2 gap-6 items-center">
+                            <div>
+                                <h3 class="font-bold text-xl mb-2 text-sky-800">Manobra de Barré</h3>
+                                <p><span class="font-semibold">Como fazer:</span> Paciente em decúbito ventral, flete as pernas sobre as coxas (90°).</p>
+                                <p class="mt-2"><span class="font-semibold">Achado (Déficit):</span> A perna do lado parético oscila e cai. Ótima para avaliar os músculos flexores da perna.</p>
+                            </div>
+                            <div class="chart-container h-56 max-h-56">
+                                <canvas id="barreCanvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sindromes" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold text-slate-900 mb-2">6. Diferenciação das Síndromes Motoras</h2>
+            <p class="text-lg text-slate-600 mb-8">Os achados do exame ajudam a localizar a lesão. Compare as características da Síndrome do Neurônio Motor Superior (SNMS) e Inferior (SNMI).</p>
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="mb-4 text-center">
+                    <button id="show-table" class="bg-sky-700 text-white py-2 px-4 rounded-lg font-semibold shadow-md hover:bg-sky-800 transition">Ver Tabela</button>
+                    <button id="show-chart" class="bg-slate-200 text-slate-700 py-2 px-4 rounded-lg font-semibold hover:bg-slate-300 transition">Ver Gráfico</button>
+                </div>
+                <div id="table-container">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-100">
+                                <tr>
+                                    <th class="p-4 font-bold text-sky-800">Sinal Clínico</th>
+                                    <th class="p-4 font-bold text-sky-800">Neurônio Motor Superior (SNMS)</th>
+                                    <th class="p-4 font-bold text-sky-800">Neurônio Motor Inferior (SNMI)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-t"><td class="p-4 font-semibold">Tônus Muscular</td><td class="p-4">Hipertonia (Espasticidade)</td><td class="p-4">Hipotonia ou Normal</td></tr>
+                                <tr class="border-t bg-slate-50"><td class="p-4 font-semibold">Reflexos Profundos</td><td class="p-4">Hiperreflexia</td><td class="p-4">Hiporreflexia ou Arreflexia</td></tr>
+                                <tr class="border-t"><td class="p-4 font-semibold">Reflexo Cutâneo-plantar</td><td class="p-4">Extensão (Sinal de Babinski)</td><td class="p-4">Flexão (normal) ou ausente</td></tr>
+                                <tr class="border-t bg-slate-50"><td class="p-4 font-semibold">Trofismo Muscular</td><td class="p-4">Atrofia leve e tardia</td><td class="p-4">Atrofia acentuada e precoce</td></tr>
+                                <tr class="border-t"><td class="p-4 font-semibold">Fasciculações</td><td class="p-4">Ausentes</td><td class="p-4">Presentes</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="chart-container-wrapper" class="hidden">
+                     <div class="chart-container">
+                        <canvas id="sindromesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+            <p class="text-slate-600 mb-4">Para um exemplo prático do exame neurológico, assista ao vídeo abaixo.</p>
+            <a href="https://www.youtube.com/watch?v=3E7a4_iPaW4" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 text-white py-2 px-6 rounded-lg font-semibold shadow-md hover:bg-red-700 transition-colors">
+                ▶️ Ver Vídeo de Exemplo
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            function updateActiveLink() {
+                let index = sections.length;
+                while(--index && window.scrollY + 150 < sections[index].offsetTop) {}
+                
+                navLinks.forEach((link) => link.classList.remove('active'));
+                if (navLinks[index]) {
+                    navLinks[index].classList.add('active');
+                    mobileNav.value = navLinks[index].getAttribute('href');
+                }
+            }
+
+            window.addEventListener('scroll', updateActiveLink);
+            updateActiveLink();
+
+            mobileNav.addEventListener('change', () => {
+                window.location.hash = mobileNav.value;
+            });
+            
+            function drawLimb(ctx, angle, length, width) {
+                ctx.save();
+                ctx.rotate(angle);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(length, 0);
+                ctx.lineWidth = width;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            function animateCanvas(canvasId, drawFunction) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let frame = 0;
+
+                function animate() {
+                    const rect = canvas.parentNode.getBoundingClientRect();
+                    canvas.width = rect.width;
+                    canvas.height = rect.height;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.strokeStyle = '#0ea5e9'; // sky-500
+                    ctx.lineCap = 'round';
+                    
+                    drawFunction(ctx, frame, canvas.width, canvas.height);
+                    
+                    frame++;
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            animateCanvas('caniveteCanvas', (ctx, frame, w, h) => {
+                const angle = Math.PI / 2;
+                const speed = 0.03;
+                let currentAngle = -Math.PI / 2.5 + (Math.sin(frame * speed) * angle) / 2 + angle / 2;
+                if (currentAngle > -0.2) currentAngle = -0.2 + (currentAngle + 0.2) * 0.1;
+
+                ctx.translate(w / 2, h * 0.9);
+                drawLimb(ctx, -Math.PI / 2, h * 0.6, 20);
+                ctx.translate(0, -h * 0.6);
+                drawLimb(ctx, currentAngle, h * 0.5, 18);
+            });
+
+            animateCanvas('rodaDenteadaCanvas', (ctx, frame, w, h) => {
+                const angle = Math.PI / 2;
+                const speed = 0.03;
+                const step = Math.PI / 20;
+                let baseAngle = -Math.PI / 2.5 + (Math.sin(frame * speed) * angle) / 2 + angle / 2;
+                let currentAngle = Math.round(baseAngle / step) * step;
+
+                ctx.translate(w / 2, h * 0.9);
+                drawLimb(ctx, -Math.PI / 2, h * 0.6, 20);
+                ctx.translate(0, -h * 0.6);
+                drawLimb(ctx, currentAngle, h * 0.5, 18);
+            });
+            
+            animateCanvas('mingazziniSupCanvas', (ctx, frame, w, h) => {
+                ctx.translate(w / 2, h * 0.8);
+                
+                // Corpo
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(0, -h*0.7);
+                ctx.lineWidth = 25;
+                ctx.stroke();
+
+                // Braço esquerdo (normal)
+                ctx.save();
+                ctx.translate(-12, -h * 0.6);
+                drawLimb(ctx, Math.PI, w * 0.4, 15);
+                ctx.restore();
+
+                // Braço direito (caindo)
+                const fallAngle = Math.PI / 8 * (1 - Math.cos(frame * 0.02));
+                const pronation = Math.PI / 4 * (1 - Math.cos(frame * 0.02));
+                ctx.save();
+                ctx.translate(12, -h * 0.6);
+                ctx.rotate(fallAngle);
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(w * 0.4, 0);
+                ctx.lineWidth = 15;
+                ctx.stroke();
+                ctx.translate(w * 0.4, 0);
+                ctx.rotate(pronation);
+                ctx.beginPath();
+                ctx.moveTo(0, -15);
+                ctx.lineTo(0, 15);
+                ctx.lineWidth = 8;
+                ctx.stroke();
+                ctx.restore();
+            });
+
+            animateCanvas('mingazziniInfCanvas', (ctx, frame, w, h) => {
+                ctx.translate(w / 2, h * 0.8);
+                // Tronco
+                ctx.beginPath();
+                ctx.moveTo(-w*0.3, 0);
+                ctx.lineTo(w*0.3, 0);
+                ctx.lineWidth = 25;
+                ctx.stroke();
+
+                // Perna esquerda (normal)
+                ctx.save();
+                ctx.translate(-w*0.15, 0);
+                drawLimb(ctx, -Math.PI / 1.5, h * 0.4, 20);
+                ctx.translate(h*0.4 * Math.cos(-Math.PI/1.5), h*0.4 * Math.sin(-Math.PI/1.5));
+                drawLimb(ctx, -Math.PI / 4, h * 0.4, 18);
+                ctx.restore();
+
+                // Perna direita (caindo)
+                const fallAngle = Math.PI / 4 * (1 - Math.cos(frame * 0.02));
+                ctx.save();
+                ctx.translate(w*0.15, 0);
+                ctx.rotate(fallAngle * 0.5);
+                drawLimb(ctx, -Math.PI / 1.5, h * 0.4, 20);
+                ctx.translate(h*0.4 * Math.cos(-Math.PI/1.5), h*0.4 * Math.sin(-Math.PI/1.5));
+                ctx.rotate(fallAngle);
+                drawLimb(ctx, -Math.PI / 4, h * 0.4, 18);
+                ctx.restore();
+            });
+            
+            animateCanvas('barreCanvas', (ctx, frame, w, h) => {
+                ctx.translate(w / 2, h * 0.8);
+                // Coxa
+                ctx.beginPath();
+                ctx.moveTo(-w*0.4, 0);
+                ctx.lineTo(w*0.4, 0);
+                ctx.lineWidth = 25;
+                ctx.stroke();
+
+                // Perna esquerda (normal)
+                ctx.save();
+                ctx.translate(-w*0.15, 0);
+                drawLimb(ctx, -Math.PI / 2, h * 0.6, 20);
+                ctx.restore();
+
+                // Perna direita (caindo)
+                const fallAngle = Math.PI / 2.5 * (1 - Math.cos(frame * 0.02));
+                ctx.save();
+                ctx.translate(w*0.15, 0);
+                drawLimb(ctx, -Math.PI / 2 + fallAngle, h * 0.6, 20);
+                ctx.restore();
+            });
+
+            const tabs = document.querySelectorAll('.tab-button');
+            const panes = document.querySelectorAll('.manobra-pane');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    panes.forEach(pane => {
+                        if (pane.id === tab.dataset.target) {
+                            pane.classList.remove('hidden');
+                        } else {
+                            pane.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const tableContainer = document.getElementById('table-container');
+            const chartContainer = document.getElementById('chart-container-wrapper');
+            const showTableBtn = document.getElementById('show-table');
+            const showChartBtn = document.getElementById('show-chart');
+            let sindromesChart;
+
+            showTableBtn.addEventListener('click', () => {
+                tableContainer.classList.remove('hidden');
+                chartContainer.classList.add('hidden');
+            });
+
+            showChartBtn.addEventListener('click', () => {
+                tableContainer.classList.add('hidden');
+                chartContainer.classList.remove('hidden');
+                if (!sindromesChart) {
+                    const ctx = document.getElementById('sindromesChart').getContext('2d');
+                    sindromesChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Tônus', 'Reflexos', 'Trofismo', 'Fasciculações'],
+                            datasets: [{
+                                label: 'SNMS (Piramidal)',
+                                data: [2, 2, 1, 0], // 2: Aumentado/Hiper, 1: Leve/Normal, 0: Ausente
+                                backgroundColor: 'rgba(3, 105, 161, 0.7)', // sky-700
+                                borderColor: 'rgba(3, 105, 161, 1)',
+                                borderWidth: 1
+                            }, {
+                                label: 'SNMI (Periférica)',
+                                data: [0.5, 0, 2, 2], // 2: Acentuado/Presente, 1: Normal, 0.5: Diminuído, 0: Ausente
+                                backgroundColor: 'rgba(100, 116, 139, 0.7)', // slate-500
+                                borderColor: 'rgba(100, 116, 139, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Comparativo de Sinais Clínicos'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            let label = context.dataset.label || '';
+                                            if (label) {
+                                                label += ': ';
+                                            }
+                                            const value = context.raw;
+                                            const feature = context.label;
+                                            let text = '';
+                                            if (feature === 'Tônus') text = value === 2 ? 'Hipertonia' : 'Hipotonia';
+                                            else if (feature === 'Reflexos') text = value === 2 ? 'Hiperreflexia' : 'A-/Hiporreflexia';
+                                            else if (feature === 'Trofismo') text = value === 2 ? 'Atrofia Acentuada' : 'Atrofia Leve';
+                                            else if (feature === 'Fasciculações') text = value === 2 ? 'Presentes' : 'Ausentes';
+                                            return label + text;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value, index, values) {
+                                            if (value === 0) return 'Ausente/Abolido';
+                                            if (value === 0.5) return 'Diminuído';
+                                            if (value === 1) return 'Leve/Normal';
+                                            if (value === 2) return 'Aumentado/Presente';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

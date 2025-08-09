@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo: Exame dos Nervos Cranianos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A two-column SPA with a fixed vertical navigation on the left for quick access to each cranial nerve, and a dynamic content area on the right. This structure prioritizes fast, non-linear access to information, which is ideal for a clinical reference guide, over the linear format of the source document. Interactions are focused on clear navigation and tabbed/accordion content within each section to prevent information overload. -->
+    <!-- Visualization & Content Choices: Content is organized into interactive cards and tabs. For Nerve V (Trigeminal), a simple diagram of the face with its three sensory zones will be created using HTML/CSS to visually aid understanding. For Nerves III, IV, VI, an HTML/CSS 'H' diagram will illustrate the cardinal directions of gaze. These choices use basic web technologies for clarity and speed, avoiding complex libraries and adhering to the NO SVG/Mermaid constraint. The primary goal is to make the procedural text easy to scan and digest. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-fade {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-item.active {
+            background-color: #0284c7; /* sky-600 */
+            color: white;
+            font-weight: 600;
+        }
+        .nav-item:not(.active):hover {
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .tab-item.active {
+            border-bottom-color: #0284c7; /* sky-600 */
+            color: #0284c7;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-sm w-full p-4 border-b border-slate-200">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-800 text-center">Guia Interativo: Exame dos Nervos Cranianos</h1>
+        </header>
+
+        <div class="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
+            <div class="flex flex-col md:flex-row gap-8">
+                
+                <!-- Left Navigation -->
+                <aside class="w-full md:w-1/4 lg:w-1/5">
+                    <nav id="cranial-nerve-nav" class="bg-white rounded-lg shadow-md p-4 sticky top-8">
+                        <h2 class="text-lg font-semibold mb-4 text-slate-700">Nervos Cranianos</h2>
+                        <ul class="space-y-2">
+                            <!-- Navigation items will be injected by JS -->
+                        </ul>
+                    </nav>
+                </aside>
+
+                <!-- Right Content Area -->
+                <main id="cranial-nerve-content" class="w-full md:w-3/4 lg:w-4/5">
+                    <!-- Content will be injected by JS -->
+                </main>
+            </div>
+        </div>
+        
+        <footer class="text-center p-4 text-sm text-slate-500 mt-8 space-y-4">
+            <p>Este guia é uma ferramenta de referência educacional. Consulte sempre a literatura médica completa.</p>
+            <div>
+                <a href="https://www.youtube.com/watch?v=BKOcqlZnCIM&t=27s" target="_blank" rel="noopener noreferrer" class="inline-block bg-sky-600 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:bg-sky-700 transition-colors">
+                    Assista a uma Demonstração em Vídeo
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const nerveData = [
+            {
+                id: 'I',
+                name: 'Nervo Olfatório',
+                icon: '👃',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">I. Nervo Olfatório</h3>
+                    <p class="mb-6 text-slate-600">Responsável pelo sentido do olfato.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Materiais Necessários</h4>
+                            <p>Substâncias aromáticas não irritantes (ex: café em pó, canela, baunilha). Evite substâncias como álcool ou amônia, pois podem estimular o nervo trigêmeo.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Procedimento de Exame</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                                <li>Peça ao paciente que feche os olhos para evitar pistas visuais.</li>
+                                <li>Oclua uma das narinas do paciente com seu dedo.</li>
+                                <li>Aproxime a substância da narina aberta e peça que ele inspire e tente identificar o odor.</li>
+                                <li>Repita o processo na outra narina, utilizando uma substância diferente se possível para confirmar a função.</li>
+                            </ol>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Achados e Alterações</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><span class="font-semibold">Normosmia:</span> Detecção e identificação normal de odores (achado normal).</li>
+                                <li><span class="font-semibold text-red-600">Anosmia:</span> Perda total do olfato.</li>
+                                <li><span class="font-semibold text-red-600">Hiposmia:</span> Diminuição da capacidade olfativa.</li>
+                                <li><span class="font-semibold text-red-600">Parosmia:</span> Percepção distorcida de um cheiro.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'II',
+                name: 'Nervo Óptico',
+                icon: '👁️',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">II. Nervo Óptico</h3>
+                    <p class="mb-6 text-slate-600">Responsável pela visão. A avaliação completa inclui acuidade, campo visual e fundoscopia.</p>
+                    <div id="nerve-II-tabs" class="bg-white p-5 rounded-lg shadow">
+                        <div class="border-b border-slate-200 mb-4">
+                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                                <button onclick="showTab('II', 'acuidade')" class="tab-item active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Acuidade Visual</button>
+                                <button onclick="showTab('II', 'campo')" class="tab-item whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Campo Visual</button>
+                                <button onclick="showTab('II', 'fundo')" class="tab-item whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Fundoscopia</button>
+                            </nav>
+                        </div>
+                        <div id="tab-content-II-acuidade" class="tab-content">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">1. Acuidade Visual</h4>
+                            <p class="text-slate-600">Utilize a <strong>Tabela de Snellen</strong> a 6 metros de distância ou um <strong>cartão de Jaeger</strong> a 36 cm. Teste cada olho separadamente, com o outro ocluído. Se o paciente usa óculos, o teste deve ser feito com eles. Na ausência de tabelas, peça para o paciente contar os dedos do examinador a diferentes distâncias.</p>
+                        </div>
+                        <div id="tab-content-II-campo" class="tab-content hidden">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">2. Campo Visual (Campimetria de Confrontação)</h4>
+                            <p class="text-slate-600">Sente-se de frente para o paciente. Peça para ele ocluir um olho e olhar fixamente para o seu nariz, enquanto você oclui seu olho oposto. Mova um objeto (seu dedo) da periferia para o centro nos quatro quadrantes do campo visual. O paciente deve avisar assim que enxergar o objeto. O seu campo visual serve como controle. As alterações incluem hemianopsias e quadrantopsias.</p>
+                        </div>
+                        <div id="tab-content-II-fundo" class="tab-content hidden">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">3. Fundoscopia (Exame do Fundo de Olho)</h4>
+                            <p class="text-slate-600">Com um oftalmoscópio, em um ambiente com pouca luz, examine a retina do paciente. Avalie a papila óptica (disco óptico), os vasos sanguíneos (artérias e veias) e a mácula. Procure por edema de papila, hemorragias ou exsudatos.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'III-IV-VI',
+                name: 'Nervos Oculomotor, Troclear e Abducente',
+                icon: '👀',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">III, IV, VI. Nervos Motores Oculares</h3>
+                    <p class="mb-6 text-slate-600">Examinados em conjunto, pois controlam a movimentação dos olhos e as pupilas.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Inspeção Estática</h4>
+                            <p>Observe a simetria das fendas palpebrais, a posição dos globos oculares e a presença de ptose (pálpebra caída). Verifique o tamanho, a forma e a simetria das pupilas (isocoria).</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Motricidade Ocular Extrínseca</h4>
+                            <p class="mb-4">Peça ao paciente para manter a cabeça parada e seguir seu dedo com os olhos. Mova o dedo formando um "H" no ar para testar as seis posições cardinais do olhar. Observe se há limitações de movimento, nistagmo ou diplopia (visão dupla).</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Reflexos Pupilares</h4>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><span class="font-semibold">Fotomotor Direto e Consensual:</span> Em ambiente com pouca luz, incida uma luz lateralmente em um olho. A pupila do olho iluminado (direto) e a do outro olho (consensual) devem contrair.</li>
+                                <li><span class="font-semibold">De Acomodação:</span> Peça ao paciente para alternar o foco de um objeto distante para o seu dedo próximo ao nariz. As pupilas devem contrair e os olhos devem convergir.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'V',
+                name: 'Nervo Trigêmeo',
+                icon: '😊',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">V. Nervo Trigêmeo</h3>
+                    <p class="mb-6 text-slate-600">Possui uma porção motora (mastigação) e uma sensitiva (face).</p>
+                     <div id="nerve-V-tabs" class="bg-white p-5 rounded-lg shadow">
+                        <div class="border-b border-slate-200 mb-4">
+                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                                <button onclick="showTab('V', 'sensitiva')" class="tab-item active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Função Sensitiva</button>
+                                <button onclick="showTab('V', 'motora')" class="tab-item whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Função Motora</button>
+                                <button onclick="showTab('V', 'reflexo')" class="tab-item whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Reflexo Córneo</button>
+                            </nav>
+                        </div>
+                        <div id="tab-content-V-sensitiva" class="tab-content">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Função Sensitiva</h4>
+                            <p class="mb-4">Com o paciente de olhos fechados, teste a sensibilidade (tátil com algodão e dolorosa com objeto de ponta romba) nos três territórios de seus ramos. Compare ambos os lados.</p>
+                            <div class="flex justify-center">
+                                <div class="relative w-48 h-64">
+                                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-20 bg-sky-200/50 border border-sky-400 rounded-t-full flex items-center justify-center text-xs font-semibold text-sky-800">V1 (Oftálmico)</div>
+                                    <div class="absolute top-16 left-1/2 -translate-x-1/2 w-48 h-24 bg-green-200/50 border border-green-400 flex items-center justify-center text-xs font-semibold text-green-800">V2 (Maxilar)</div>
+                                    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 h-24 bg-orange-200/50 border border-orange-400 rounded-b-lg flex items-center justify-center text-xs font-semibold text-orange-800">V3 (Mandibular)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-content-V-motora" class="tab-content hidden">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Função Motora</h4>
+                            <p>Peça ao paciente para cerrar os dentes e palpe os músculos masseter e temporal para avaliar o tônus e a força. Peça para ele abrir a boca contra resistência e mover a mandíbula lateralmente.</p>
+                        </div>
+                        <div id="tab-content-V-reflexo" class="tab-content hidden">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Reflexo Córneo-Palpebral</h4>
+                            <p>Toque levemente a córnea do paciente com a ponta de um chumaço de algodão, aproximando-se pela lateral. A resposta normal é o piscar de ambos os olhos. (Aferente: N. Trigêmeo; Eferente: N. Facial).</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'VII',
+                name: 'Nervo Facial',
+                icon: '😄',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">VII. Nervo Facial</h3>
+                    <p class="mb-6 text-slate-600">Responsável pela mímica facial e parte da gustação.</p>
+                    <div class="space-y-6">
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Procedimento de Exame</h4>
+                            <p class="mb-2">Peça ao paciente para realizar os seguintes movimentos e observe a simetria:</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-600">
+                                <li>Levantar as sobrancelhas.</li>
+                                <li>Franzir a testa.</li>
+                                <li>Fechar os olhos com força (tente abri-los contra a resistência).</li>
+                                <li>Mostrar os dentes ou sorrir.</li>
+                                <li>Inflar as bochechas (pressione-as para verificar se o ar escapa).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg shadow">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Diferenciação de Paralisia</h4>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <h5 class="font-semibold">Paralisia Facial Periférica</h5>
+                                    <p class="text-sm text-slate-600">Afeta toda a hemiface ipsilateral (testa, olho e boca). O paciente não consegue enrugar a testa nem fechar o olho do lado afetado.</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold">Paralisia Facial Central</h5>
+                                    <p class="text-sm text-slate-600">Poupa a musculatura da testa, afetando principalmente o andar inferior da face contralateral. O paciente consegue enrugar a testa.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'VIII',
+                name: 'Nervo Vestibulococlear',
+                icon: '👂',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">VIII. Nervo Vestibulococlear</h3>
+                    <p class="mb-6 text-slate-600">Composto pelos ramos coclear (audição) e vestibular (equilíbrio).</p>
+                    <div id="nerve-VIII-tabs" class="bg-white p-5 rounded-lg shadow">
+                        <div class="border-b border-slate-200 mb-4">
+                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                                <button onclick="showTab('VIII', 'coclear')" class="tab-item active whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Ramo Coclear (Audição)</button>
+                                <button onclick="showTab('VIII', 'vestibular')" class="tab-item whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm">Ramo Vestibular (Equilíbrio)</button>
+                            </nav>
+                        </div>
+                        <div id="tab-content-VIII-coclear" class="tab-content">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Avaliação da Audição</h4>
+                             <ul class="list-disc list-inside space-y-2">
+                                <li><span class="font-semibold">Teste da Voz Sussurrada:</span> Oclua um dos ouvidos do paciente e sussurre palavras a uma distância de 30-60 cm do outro ouvido.</li>
+                                <li><span class="font-semibold">Teste de Weber:</span> Coloque um diapasão vibrando no topo da cabeça. Normal: som percebido no centro. Lateraliza para o lado da perda condutiva ou para o lado oposto da perda neurossensorial.</li>
+                                <li><span class="font-semibold">Teste de Rinne:</span> Coloque o diapasão na mastoide; quando o som cessar, mova-o para frente do canal auditivo. Normal (Rinne +): condução aérea > óssea. Anormal (Rinne -): condução óssea > aérea (perda condutiva).</li>
+                            </ul>
+                        </div>
+                        <div id="tab-content-VIII-vestibular" class="tab-content hidden">
+                            <h4 class="font-semibold text-lg mb-2 text-slate-700">Avaliação do Equilíbrio</h4>
+                            <p>A função vestibular é avaliada principalmente durante o exame da coordenação e do equilíbrio. Procure por nistagmo, vertigem e instabilidade na marcha. A <strong>Manobra de Romberg</strong> (piorar o equilíbrio ao fechar os olhos) pode indicar disfunção vestibular ou proprioceptiva.</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'IX-X',
+                name: 'Nervos Glossofaríngeo e Vago',
+                icon: '🗣️',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">IX, X. Nervos Glossofaríngeo e Vago</h3>
+                    <p class="mb-6 text-slate-600">Examinados em conjunto, controlam a fonação, deglutição e o reflexo do vômito.</p>
+                    <div class="bg-white p-5 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-2 text-slate-700">Procedimento de Exame</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                            <li>Peça ao paciente para dizer "Ahhh" e observe a elevação do palato mole e a posição da úvula. O normal é a elevação simétrica. Em caso de lesão, a úvula desvia para o lado <strong>são</strong>.</li>
+                            <li>Observe a qualidade da voz do paciente (rouquidão, voz anasalada, etc.).</li>
+                            <li>Teste o <strong>Reflexo do Vômito (Gag Reflex)</strong> tocando a parede posterior da faringe de cada lado com uma espátula (a ausência pode ser normal em alguns indivíduos).</li>
+                            <li>Peça para o paciente engolir um pequeno gole de água e observe se há dificuldade (disfagia) ou tosse.</li>
+                        </ol>
+                    </div>
+                `
+            },
+            {
+                id: 'XI',
+                name: 'Nervo Acessório',
+                icon: '🤷',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">XI. Nervo Acessório</h3>
+                    <p class="mb-6 text-slate-600">Inerva os músculos trapézio e esternocleidomastóideo, controlando a elevação dos ombros e a rotação da cabeça.</p>
+                     <div class="bg-white p-5 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-2 text-slate-700">Procedimento de Exame</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h5 class="font-semibold">Músculo Trapézio</h5>
+                                <p class="text-sm text-slate-600">Peça ao paciente para elevar (encolher) os ombros contra a resistência de suas mãos aplicadas sobre eles. Observe a força e a simetria.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">Músculo Esternocleidomastóideo</h5>
+                                <p class="text-sm text-slate-600">Peça ao paciente para virar a cabeça para um lado contra a resistência de sua mão. Palpe o músculo contralateral para avaliar o tônus. Repita para o outro lado.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'XII',
+                name: 'Nervo Hipoglosso',
+                icon: '👅',
+                content: `
+                    <h3 class="text-2xl font-bold text-sky-700 mb-4">XII. Nervo Hipoglosso</h3>
+                    <p class="mb-6 text-slate-600">Controla a motricidade da língua.</p>
+                    <div class="bg-white p-5 rounded-lg shadow">
+                        <h4 class="font-semibold text-lg mb-2 text-slate-700">Procedimento de Exame</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                            <li>Peça ao paciente para colocar a língua para fora. Observe se há desvios, atrofia ou fasciculações (pequenas contrações). Em caso de lesão, a língua desvia para o lado <strong>lesado</strong>.</li>
+                            <li>Peça para ele mover a língua rapidamente de um lado para o outro.</li>
+                            <li>Teste a força pedindo para ele empurrar a língua contra a bochecha de cada lado, enquanto você faz uma resistência por fora com o dedo.</li>
+                        </ol>
+                    </div>
+                `
+            },
+        ];
+
+        const navContainer = document.getElementById('cranial-nerve-nav').querySelector('ul');
+        const contentContainer = document.getElementById('cranial-nerve-content');
+
+        function displayNerve(nerveId) {
+            const nerve = nerveData.find(n => n.id === nerveId);
+            if (!nerve) return;
+            
+            contentContainer.innerHTML = `<div class="content-fade">${nerve.content}</div>`;
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.nerveId === nerveId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+        
+        function showTab(nerveId, tabId) {
+            const nerveContent = document.getElementById(`nerve-${nerveId}-tabs`);
+            if (!nerveContent) return;
+
+            nerveContent.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            nerveContent.querySelectorAll('.tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(`tab-content-${nerveId}-${tabId}`).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+
+        function init() {
+            nerveData.forEach(nerve => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <button data-nerve-id="${nerve.id}" class="nav-item w-full text-left px-4 py-2.5 rounded-md transition-colors duration-200 text-sm flex items-center gap-3">
+                        <span class="text-lg">${nerve.icon}</span>
+                        <span>${nerve.id}. ${nerve.name}</span>
+                    </button>
+                `;
+                navContainer.appendChild(li);
+            });
+
+            navContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.nerveId) {
+                    displayNerve(button.dataset.nerveId);
+                }
+            });
+
+            displayNerve('I');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
+
+

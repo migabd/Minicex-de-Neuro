@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo para o Exame de Sensibilidade Neurológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: A task-oriented, single-page application designed for medical students and professionals. The structure is organized by sensitivity type (Superficial, Profunda, Cortical) rather than a linear document flow. This thematic approach allows users to quickly access and focus on a specific part of the exam. The main screen presents these categories as large, clickable cards. Clicking a card reveals a detailed view of the specific tests within that category, including techniques, materials, and interpretation. This structure was chosen for its high usability in a clinical or learning setting, providing a quick-reference tool that is more intuitive than navigating a PDF. The user flow is simple: Home -> Select Category -> View Test Details. -->
+    <!-- Visualization & Content Choices: The source documents are procedural guides. The goal is to inform and guide the user through the steps of the neurological sensitivity exam. Instead of charts, the application uses structured HTML/CSS with Tailwind to create interactive cards and detailed views. Goal: Inform/Guide -> Presentation: Interactive Cards/Detailed Text Blocks -> Interaction: Click to reveal details -> Justification: This method is highly effective for presenting procedural information in a clear, step-by-step, and easily navigable format, which is superior to static text for learning and quick reference. No data visualization libraries are needed as the content is instructional. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f7f4;
+            color: #4a4a4a;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: 1px solid #e5e7eb;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .modal {
+            display: none;
+        }
+        .modal-content {
+            background-color: #f8f7f4;
+        }
+        .btn-primary {
+            background-color: #8d7b68;
+            color: #ffffff;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #7a6a58;
+        }
+        .tag {
+            background-color: #e5e0da;
+            color: #8d7b68;
+            font-weight: 500;
+        }
+        .icon-placeholder {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="main-content" class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-[#6b5d4f]">Guia Interativo de Sensibilidade Neurológica</h1>
+            <p class="mt-2 text-lg text-gray-600">Um guia prático para o exame físico neurológico.</p>
+        </header>
+
+        <div id="intro-section" class="bg-white p-6 rounded-lg shadow-sm mb-8 border border-gray-200">
+            <h2 class="text-2xl font-semibold text-[#8d7b68] mb-3">Como Usar Este Guia</h2>
+            <p class="text-gray-700">Esta aplicação foi desenhada para simplificar a avaliação da sensibilidade neurológica. A avaliação sensorial é fundamental para identificar e localizar lesões no sistema nervoso. Para garantir a precisão, lembre-se sempre dos princípios fundamentais: o paciente deve estar relaxado e de olhos fechados, e a comparação entre áreas simétricas do corpo é essencial. Navegue pelas categorias abaixo para explorar cada tipo de teste, incluindo as técnicas, materiais necessários e a interpretação dos achados.</p>
+        </div>
+
+        <div id="card-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1: Superficial -->
+            <div class="card p-6 flex flex-col items-center text-center cursor-pointer" onclick="openModal('superficial')">
+                <div class="icon-placeholder mb-4">🖐️</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Sensibilidade Superficial</h3>
+                <p class="text-gray-600">Avalia a percepção de tato, dor e temperatura. Essencial para testar as vias espinotalâmicas.</p>
+            </div>
+            <!-- Card 2: Profunda -->
+            <div class="card p-6 flex flex-col items-center text-center cursor-pointer" onclick="openModal('profunda')">
+                <div class="icon-placeholder mb-4">🚶‍♂️</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Sensibilidade Profunda</h3>
+                <p class="text-gray-600">Testa a propriocepção e a sensibilidade vibratória, avaliando a função da coluna dorsal.</p>
+            </div>
+            <!-- Card 3: Cortical -->
+            <div class="card p-6 flex flex-col items-center text-center cursor-pointer" onclick="openModal('cortical')">
+                <div class="icon-placeholder mb-4">🧠</div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Sensibilidade Cortical</h3>
+                <p class="text-gray-600">Examina a capacidade do cérebro de interpretar sensações, como reconhecer objetos pelo tato.</p>
+            </div>
+        </div>
+
+        <div class="mt-12 text-center bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h2 class="text-2xl font-semibold text-[#8d7b68] mb-3">Recurso Adicional</h2>
+            <p class="text-gray-700 mb-4">Assista a um vídeo demonstrativo para visualizar os testes de sensibilidade em ação e aprimorar sua técnica.</p>
+            <a href="https://www.youtube.com/watch?v=hD7YTPSFh4g" target="_blank" rel="noopener noreferrer" class="inline-block btn-primary font-bold py-3 px-8 rounded-lg text-lg transition-transform transform hover:scale-105">
+                🎥 Assistir Demonstração
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="modal-content w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl p-6 md:p-8 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold">&times;</button>
+            <div id="modal-body">
+                <!-- Content will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modalContent = {
+            superficial: {
+                title: 'Sensibilidade Superficial (Exteroceptiva)',
+                intro: 'Esta modalidade avalia a percepção de estímulos que se originam fora do corpo. É fundamental para avaliar a integridade das vias espinotalâmicas.',
+                tests: [
+                    {
+                        name: 'Sensibilidade Tátil (Tato Leve)',
+                        icon: '☁️',
+                        materials: 'Algodão ou cotonete.',
+                        technique: 'Toque levemente a pele do paciente com uma mecha de algodão. Evite usar a ponta dos dedos para não estimular receptores de pressão. Teste várias áreas dos membros e tronco, comparando lados.',
+                        command: 'Peça ao paciente para dizer "sim" ou "agora" toda vez que sentir o toque.'
+                    },
+                    {
+                        name: 'Sensibilidade Dolorosa',
+                        icon: '📌',
+                        materials: 'Palito de dente descartável ou ponta de uma espátula quebrada.',
+                        technique: 'Use um objeto pontiagudo e um rombo. Alterne os estímulos de forma aleatória e peça para o paciente diferenciar entre "pontiagudo" e "rombo". Evite aplicar pressão excessiva.',
+                        command: 'Peça ao paciente para identificar o estímulo como "pontiagudo" ou "rombo".'
+                    },
+                    {
+                        name: 'Sensibilidade Térmica',
+                        icon: '🌡️',
+                        materials: 'Dois tubos de ensaio (um com água fria, outro com água morna).',
+                        technique: 'Toque a pele do paciente alternadamente com os tubos. Este teste geralmente é realizado apenas se a sensibilidade dolorosa estiver alterada, pois as vias nervosas são próximas.',
+                        command: 'Peça ao paciente para identificar a sensação como "frio" ou "quente".'
+                    }
+                ]
+            },
+            profunda: {
+                title: 'Sensibilidade Profunda (Proprioceptiva)',
+                intro: 'Esta modalidade avalia a percepção da posição do corpo e dos movimentos no espaço, sendo crucial para a função da coluna dorsal do sistema nervoso.',
+                tests: [
+                    {
+                        name: 'Sensibilidade Cinético-Postural (Propriocepção)',
+                        icon: '↕️',
+                        materials: 'Nenhum.',
+                        technique: 'Segure as laterais do hálux ou do dedo da mão do paciente para evitar dar pistas pela pressão. Mova o dedo para cima ou para baixo e pare em uma posição. Comece com movimentos amplos e depois reduza a amplitude.',
+                        command: 'Peça ao paciente (de olhos fechados) para dizer em qual posição o dedo se encontra ("para cima" ou "para baixo").'
+                    },
+                    {
+                        name: 'Sensibilidade Vibratória (Palestesia)',
+                        icon: '🎶',
+                        materials: 'Diapasão (128 Hz).',
+                        technique: 'Faça o diapasão vibrar e coloque sua base firmemente sobre uma proeminência óssea (ex: hálux, maléolo). Compare a percepção do paciente com a sua. Se houver déficit, mova-se para locais mais proximais.',
+                        command: 'Peça ao paciente para avisar quando a vibração começar e quando parar.'
+                    }
+                ]
+            },
+            cortical: {
+                title: 'Sensibilidade Cortical (Combinada)',
+                intro: 'Estes testes avaliam a capacidade do córtex cerebral de interpretar sensações complexas. Só devem ser realizados se as sensibilidades superficial e profunda estiverem intactas.',
+                tests: [
+                    {
+                        name: 'Estereognosia',
+                        icon: '🔑',
+                        materials: 'Objetos pequenos e familiares (moeda, chave, clipe).',
+                        technique: 'Peça ao paciente para fechar os olhos e estender a mão. Coloque um objeto comum na mão dele e peça para que o identifique apenas pela palpação. Teste ambas as mãos.',
+                        command: 'Peça ao paciente para nomear o objeto que está a segurar.'
+                    },
+                    {
+                        name: 'Grafestesia',
+                        icon: '✍️',
+                        materials: 'Objeto de ponta romba (ex: tampa de caneta).',
+                        technique: 'Desenhe um número ou uma letra na palma da mão do paciente. Este teste é uma alternativa útil quando o paciente não consegue segurar um objeto (ex: devido a paralisia).',
+                        command: 'Peça ao paciente para identificar o número ou letra que foi desenhado.'
+                    }
+                ]
+            }
+        };
+
+        const modal = document.getElementById('modal');
+        const modalBody = document.getElementById('modal-body');
+
+        function openModal(type) {
+            const content = modalContent[type];
+            if (!content) return;
+
+            let testsHtml = content.tests.map(test => `
+                <div class="bg-white p-5 rounded-lg shadow-md border border-gray-200 mb-4">
+                    <h4 class="text-lg font-semibold text-[#8d7b68] flex items-center mb-3">
+                        <span class="text-2xl mr-3">${test.icon}</span>
+                        ${test.name}
+                    </h4>
+                    <div class="space-y-3 text-gray-700 pl-10">
+                        <p><strong class="font-medium text-gray-800">Materiais:</strong> ${test.materials}</p>
+                        <p><strong class="font-medium text-gray-800">Técnica:</strong> ${test.technique}</p>
+                        <p><strong class="font-medium text-gray-800">Comando ao Paciente:</strong> ${test.command}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            modalBody.innerHTML = `
+                <h2 class="text-2xl md:text-3xl font-bold text-[#6b5d4f] mb-2">${content.title}</h2>
+                <p class="text-gray-600 mb-6">${content.intro}</p>
+                ${testsHtml}
+                <div class="mt-6 text-center">
+                    <button onclick="closeModal()" class="btn-primary font-bold py-2 px-6 rounded-lg">Fechar</button>
+                </div>
+            `;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
