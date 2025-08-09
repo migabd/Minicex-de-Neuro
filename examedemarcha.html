@@ -4,44 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guia Interativo: Exame da Coordenação e Marcha</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutral Harmony -->
-    <!-- Application Structure Plan: A single-page application featuring a main header and three primary collapsible accordion sections: "Coordenação Axial", "Coordenação Apendicular", and "Padrões de Marcha Anormais". This structure organizes the procedural information into manageable, focused chunks, improving upon the linear text format by allowing users to quickly navigate to and expand only the sections they need. Interactions are based on click-to-reveal cards and panels to reduce initial cognitive load and facilitate learning and quick reference. -->
-    <!-- Visualization & Content Choices: The source report contains procedural text for a neurological exam. The goal is to inform and guide the user. The chosen presentation method is an interactive SPA with accordions and cards, with click-to-expand/collapse interactions. This approach breaks down a complex procedure into digestible, non-linear parts, making it more engaging and easier to reference than a static document. The implementation uses Vanilla JS for interactivity and Tailwind CSS for styling. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
+        /* Estilos personalizados para o novo layout de abas */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
         }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
-            padding: 0 1.5rem;
-        }
-        .accordion-content.open {
-            padding: 1.5rem;
-        }
-        .accordion-arrow {
-            transition: transform 0.3s ease-in-out;
-        }
-        .accordion-button.open .accordion-arrow {
-            transform: rotate(90deg);
-        }
-        .card-content {
+
+        /* Esconde os painéis de conteúdo das abas por padrão */
+        .tab-content {
             display: none;
+            animation: fadeIn 0.5s;
         }
-        .card-content.open {
+
+        /* Mostra o painel de conteúdo da aba ativa */
+        .tab-content.active {
             display: block;
         }
-        .section-icon {
-            font-size: 1.75rem;
-            line-height: 1;
+
+        /* Estilo para o botão da aba ativa */
+        .tab-button.active {
+            border-color: #4f46e5; /* indigo-600 */
+            color: #4f46e5; /* indigo-600 */
+            background-color: #eef2ff; /* indigo-50 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -49,40 +46,60 @@
 
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
         
-        <header class="text-center mb-10">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Guia Interativo</h1>
-            <p class="text-lg text-gray-600 mt-2">Exame da Coordenação Motora e Marcha</p>
+        <!-- Cabeçalho Principal -->
+        <header class="text-center mb-12">
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-800">Guia Interativo</h1>
+            <p class="text-lg text-slate-600 mt-2">Exame da Coordenação Motora e Marcha</p>
         </header>
 
-        <main class="space-y-4">
+        <!-- Container das Abas -->
+        <div>
+            <!-- Navegação das Abas -->
+            <div class="border-b border-slate-200 mb-6">
+                <nav class="-mb-px flex flex-wrap space-x-4" aria-label="Tabs">
+                    <button class="tab-button active group inline-flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm text-slate-500 hover:text-indigo-600 hover:border-indigo-600 transition-all duration-200" data-tab="axial">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Coordenação Axial
+                    </button>
+                    <button class="tab-button group inline-flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm text-slate-500 hover:text-indigo-600 hover:border-indigo-600 transition-all duration-200" data-tab="apendicular">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" />
+                        </svg>
+                        Coordenação Apendicular
+                    </button>
+                    <button class="tab-button group inline-flex items-center gap-2 py-4 px-2 border-b-2 font-medium text-sm text-slate-500 hover:text-indigo-600 hover:border-indigo-600 transition-all duration-200" data-tab="marcha">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+                        </svg>
+                        Padrões de Marcha
+                    </button>
+                </nav>
+            </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200/80">
-                <button class="accordion-button w-full flex justify-between items-center p-5 text-left text-lg font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-                    <span class="flex items-center">
-                        <span class="section-icon mr-4 text-amber-600">🧍</span>
-                        Coordenação Axial (Equilíbrio)
-                    </span>
-                    <span class="accordion-arrow text-gray-500 text-2xl transform transition-transform duration-300">›</span>
-                </button>
-                <div class="accordion-content">
-                    <p class="mb-6 text-gray-600">Avalia a capacidade do paciente de manter a postura estática e dinâmica. Envolve a integração de informações do sistema vestibular, proprioceptivo e visual.</p>
+            <!-- Conteúdo das Abas -->
+            <div id="tab-contents">
+                <!-- Conteúdo: Coordenação Axial -->
+                <div id="axial-content" class="tab-content active">
+                    <p class="mb-6 text-slate-600">Avalia a capacidade do paciente de manter a postura estática e dinâmica. Envolve a integração de informações do sistema vestibular, proprioceptivo e visual.</p>
                     <div class="space-y-4">
-                        <div id="romberg-card" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">a. Equilíbrio Estático (Manobra de Romberg)</h4>
-                            <p class="text-sm text-gray-500 mt-1">1. Peça ao paciente que fique em pé, com os pés juntos e braços ao longo do corpo.</p>
-                            <p class="text-sm text-gray-500 mt-1">2. Solicite que feche os olhos por 20 segundos. Fique próximo para apoio.</p>
-                            <button onclick="toggleCardContent('romberg-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Interpretação ›</button>
-                            <div id="romberg-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">a. Equilíbrio Estático (Manobra de Romberg)</h4>
+                            <p class="text-sm text-slate-500 mt-2">1. Peça ao paciente que fique em pé, com os pés juntos e braços ao longo do corpo.</p>
+                            <p class="text-sm text-slate-500 mt-1">2. Solicite que feche os olhos por 20 segundos. Fique próximo para apoio.</p>
+                            <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Interpretação:</h5>
                                 <p><strong>Normal:</strong> Ausência de oscilação significativa.</p>
                                 <p><strong>Sinal de Romberg Positivo:</strong> Piora imediata e acentuada do equilíbrio ao fechar os olhos. Sugere lesão na sensibilidade profunda.</p>
                                 <p><strong>Romberg Vestibular:</strong> Após um breve momento, o paciente oscila e tende a cair para o mesmo lado da lesão vestibular.</p>
                             </div>
                         </div>
-                        <div id="marcha-card" class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">b. Equilíbrio Dinâmico (Avaliação da Marcha)</h4>
-                             <p class="text-sm text-gray-500 mt-1">Observe a marcha normal do paciente em linha reta. Para detectar alterações sutis, utilize as manobras de sensibilização.</p>
-                            <button onclick="toggleCardContent('marcha-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Manobras de Sensibilização ›</button>
-                            <div id="marcha-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">b. Equilíbrio Dinâmico (Avaliação da Marcha)</h4>
+                             <p class="text-sm text-slate-500 mt-2">Observe a marcha normal do paciente em linha reta. Para detectar alterações sutis, utilize as manobras de sensibilização.</p>
+                            <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Manobras de Sensibilização:</h5>
                                 <p><strong>Andar na ponta dos pés.</strong></p>
                                 <p><strong>Andar sobre os calcanhares.</strong></p>
                                 <p><strong>Marcha em Tandem (Pé-ante-pé):</strong> Caminhar com o calcanhar de um pé tocando os dedos do outro.</p>
@@ -90,136 +107,126 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200/80">
-                <button class="accordion-button w-full flex justify-between items-center p-5 text-left text-lg font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-                    <span class="flex items-center">
-                        <span class="section-icon mr-4 text-cyan-600">🤏</span>
-                        Coordenação Apendicular (Membros)
-                    </span>
-                    <span class="accordion-arrow text-gray-500 text-2xl transform transition-transform duration-300">›</span>
-                </button>
-                <div class="accordion-content">
-                    <p class="mb-6 text-gray-600">Avalia a precisão, velocidade e suavidade dos movimentos dos braços e pernas. Alterações aqui são sinais importantes de disfunção cerebelar.</p>
+                <!-- Conteúdo: Coordenação Apendicular -->
+                <div id="apendicular-content" class="tab-content">
+                    <p class="mb-6 text-slate-600">Avalia a precisão, velocidade e suavidade dos movimentos dos braços e pernas. Alterações aqui são sinais importantes de disfunção cerebelar.</p>
                     <div class="grid md:grid-cols-2 gap-4">
-                        
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Prova Índex-Nariz</h4>
-                            <p class="text-sm text-gray-500 mt-1">Paciente estende o braço e toca a ponta do nariz com o dedo indicador.</p>
-                            <button onclick="toggleCardContent('index-nariz-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Alterações ›</button>
-                            <div id="index-nariz-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Prova Índex-Nariz</h4>
+                            <p class="text-sm text-slate-500 mt-2">Paciente estende o braço e toca a ponta do nariz com o dedo indicador.</p>
+                             <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Alterações Comuns:</h5>
                                 <p><strong>Dismetria:</strong> Erro ao alcançar o alvo (passa ou não chega).</p>
                                 <p><strong>Tremor de Intenção:</strong> Tremor que aumenta ao se aproximar do alvo.</p>
                             </div>
                         </div>
-
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Prova Calcanhar-Joelho</h4>
-                            <p class="text-sm text-gray-500 mt-1">Paciente deitado, toca o joelho oposto com o calcanhar e desliza pela tíbia.</p>
-                            <button onclick="toggleCardContent('calcanhar-joelho-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Alterações ›</button>
-                            <div id="calcanhar-joelho-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Prova Calcanhar-Joelho</h4>
+                            <p class="text-sm text-slate-500 mt-2">Paciente deitado, toca o joelho oposto com o calcanhar e desliza pela tíbia.</p>
+                            <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Alterações Comuns:</h5>
                                 <p><strong>Dismetria:</strong> O calcanhar erra o alvo (joelho).</p>
                                 <p><strong>Decomposição:</strong> Movimento realizado em etapas, não fluido.</p>
                             </div>
                         </div>
-
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Diadococinesia</h4>
-                            <p class="text-sm text-gray-500 mt-1">Movimentos rápidos e alternados (ex: pronação/supinação da mão).</p>
-                            <button onclick="toggleCardContent('diadococinesia-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Alterações ›</button>
-                            <div id="diadococinesia-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
-                                <p><strong>Disdiadococinesia:</strong> Dificuldade em realizar os movimentos de forma rápida e coordenada. Sinal clássico de patologia cerebelar.</p>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Diadococinesia</h4>
+                            <p class="text-sm text-slate-500 mt-2">Movimentos rápidos e alternados (ex: pronação/supinação da mão).</p>
+                            <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Alterações Comuns:</h5>
+                                <p><strong>Disdiadococinesia:</strong> Dificuldade em realizar os movimentos de forma rápida e coordenada.</p>
                             </div>
                         </div>
-
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Prova do Rechaço</h4>
-                            <p class="text-sm text-gray-500 mt-1">Paciente flexiona o antebraço contra resistência, que é solta subitamente.</p>
-                            <button onclick="toggleCardContent('rechaco-details')" class="mt-3 text-sm font-medium text-blue-600 hover:text-blue-800">Ver Alterações ›</button>
-                            <div id="rechaco-details" class="card-content mt-3 pt-3 border-t border-gray-200 space-y-2">
-                                <p><strong>Positivo:</strong> Incapacidade de frear o movimento, fazendo com que o braço se choque contra o corpo. Indica lesão cerebelar.</p>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Prova do Rechaço</h4>
+                            <p class="text-sm text-slate-500 mt-2">Paciente flexiona o antebraço contra resistência, que é solta subitamente.</p>
+                            <div class="mt-4 pt-4 border-t border-slate-200/80 space-y-2 text-sm">
+                                <h5 class="font-semibold text-slate-700">Alterações Comuns:</h5>
+                                <p><strong>Positivo:</strong> Incapacidade de frear o movimento, fazendo com que o braço se choque contra o corpo.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200/80">
-                <button class="accordion-button w-full flex justify-between items-center p-5 text-left text-lg font-semibold text-gray-700 hover:bg-gray-50 rounded-xl transition-colors duration-200">
-                    <span class="flex items-center">
-                        <span class="section-icon mr-4 text-rose-600">🚶</span>
-                        Padrões Anormais de Marcha
-                    </span>
-                    <span class="accordion-arrow text-gray-500 text-2xl transform transition-transform duration-300">›</span>
-                </button>
-                <div class="accordion-content">
-                     <p class="mb-6 text-gray-600">A observação da marcha pode revelar pistas diagnósticas cruciais sobre a localização da lesão neurológica.</p>
+                <!-- Conteúdo: Padrões de Marcha -->
+                <div id="marcha-content" class="tab-content">
+                    <p class="mb-6 text-slate-600">A observação da marcha pode revelar pistas diagnósticas cruciais sobre a localização da lesão neurológica.</p>
                     <div class="space-y-4">
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Marcha Ebriosa ou Atáxica</h4>
-                            <p class="text-sm text-gray-600 mt-1">Base alargada, passos irregulares e instabilidade, semelhante a uma pessoa alcoolizada. Típica de doenças cerebelares.</p>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Ebriosa ou Atáxica</h4>
+                            <p class="text-sm text-slate-600 mt-2">Base alargada, passos irregulares e instabilidade, semelhante a uma pessoa alcoolizada. Típica de doenças cerebelares.</p>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Marcha Talonante ou Escarvante</h4>
-                            <p class="text-sm text-gray-600 mt-1">O paciente levanta exageradamente os joelhos e bate com o calcanhar no chão a cada passo. Ocorre em lesões da sensibilidade profunda.</p>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Talonante</h4>
+                            <p class="text-sm text-slate-600 mt-2">O paciente levanta exageradamente os joelhos e bate com o calcanhar no chão a cada passo para sentir o contato. Ocorre em lesões da sensibilidade profunda (propriocepção).</p>
                         </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <h4 class="font-semibold text-md text-gray-800">Marcha em Estrela (Babinski-Weil)</h4>
-                            <p class="text-sm text-gray-600 mt-1">Em lesões vestibulares, o paciente desvia para o lado da lesão ao andar para frente e para o lado oposto ao andar de costas, desenhando uma estrela.</p>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha em Estrela (Babinski-Weil)</h4>
+                            <p class="text-sm text-slate-600 mt-2">Em lesões vestibulares, o paciente de olhos fechados desvia para o lado da lesão ao andar para frente e para o lado oposto ao andar de costas, desenhando uma estrela.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Parkinsoniana ou Festinante</h4>
+                            <p class="text-sm text-slate-600 mt-2">Passos curtos e arrastados, com o tronco inclinado para frente. O paciente parece "correr atrás do seu centro de gravidade", com dificuldade para iniciar e parar o movimento.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Hemiplégica ou Ceifante</h4>
+                            <p class="text-sm text-slate-600 mt-2">O paciente mantém o braço fletido e a perna estendida do lado afetado. Para andar, move a perna em um arco para fora (circundução), como se estivesse a "ceifar".</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Escarvante ou De Estepagem</h4>
+                            <p class="text-sm text-slate-600 mt-2">Causada pela fraqueza dos músculos que levantam o pé (dorsiflexores). O paciente levanta o joelho mais alto que o normal para evitar que a ponta do pé arraste no chão.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-lg border border-slate-200">
+                            <h4 class="font-semibold text-md text-slate-800">Marcha Anserina ou "De Pato"</h4>
+                            <p class="text-sm text-slate-600 mt-2">Ocorre por fraqueza dos músculos da cintura pélvica. O paciente anda balançando o tronco de um lado para o outro para compensar a queda da pelve a cada passo.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
         
-        <div class="text-center mt-10">
-            <a href="https://www.youtube.com/watch?v=igHkor7AYUU&list=TLPQMDkwODIwMjV9DdjfUNAqGw&index=2" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
+        <!-- Botão de Ação Principal -->
+        <div class="text-center mt-12">
+            <a href="https://www.youtube.com/watch?v=igHkor7AYUU" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-indigo-600 text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:bg-indigo-700 transition-all duration-300 transform hover:scale-105">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 001.553.832l3-2a1 1 0 000-1.664l-3-2z" />
+                </svg>
                 Assista ao Vídeo de Demonstração
             </a>
         </div>
 
-        <footer class="text-center mt-8">
-            <p class="text-xs text-gray-400">Este guia é uma ferramenta de apoio educacional e não substitui o julgamento clínico.</p>
+        <!-- Rodapé -->
+        <footer class="text-center mt-12 border-t border-slate-200 pt-6">
+            <p class="text-xs text-slate-500">Este guia é uma ferramenta de apoio educacional e não substitui o julgamento clínico.</p>
         </footer>
 
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const accordionButtons = document.querySelectorAll('.accordion-button');
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
 
-            accordionButtons.forEach(button => {
+            tabButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const content = button.nextElementSibling;
-                    const isOpen = button.classList.contains('open');
+                    // Obtém o valor do atributo 'data-tab' do botão clicado
+                    const tabId = button.dataset.tab;
 
-                    button.classList.toggle('open');
-                    content.classList.toggle('open');
-                    
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
+                    // Remove a classe 'active' de todos os botões e conteúdos
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Adiciona a classe 'active' ao botão clicado e ao conteúdo correspondente
+                    const contentToShow = document.getElementById(tabId + '-content');
+                    button.classList.add('active');
+                    if (contentToShow) {
+                        contentToShow.classList.add('active');
                     }
                 });
             });
         });
-
-        function toggleCardContent(elementId) {
-            const content = document.getElementById(elementId);
-            const button = content.previousElementSibling;
-            
-            content.classList.toggle('open');
-            
-            if (content.classList.contains('open')) {
-                button.innerHTML = 'Ocultar Detalhes ‹';
-            } else {
-                button.innerHTML = 'Ver Detalhes ›';
-            }
-        }
     </script>
 
 </body>
 </html>
-
