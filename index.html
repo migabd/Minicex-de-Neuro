@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minicex de Neuro - Índice Principal</title>
+    
+    <!-- Tailwind CSS para estilização rápida e moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonte do Google Fonts para um visual mais limpo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Aplicando a fonte Inter como padrão */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Efeito de transição suave para os botões */
+        .btn-transition {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <!-- Container Principal -->
+    <div class="container mx-auto px-4 py-8 md:py-16 min-h-screen flex flex-col items-center justify-center">
+
+        <!-- Cabeçalho -->
+        <header class="text-center mb-10 md:mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-600 dark:text-blue-400">Minicex de Neuro</h1>
+            <p class="text-lg md:text-xl mt-2 text-gray-600 dark:text-gray-400">Seu guia de referência para o exame neurológico.</p>
+        </header>
+
+        <!-- Grade de Botões com os Links -->
+        <main class="w-full max-w-2xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+                
+                <!-- Botão 1: Exame de Marcha -->
+                <a href="examedemarcha.html" class="block p-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 btn-transition text-center">
+                    <h2 class="text-2xl font-bold">Exame de Marcha</h2>
+                    <p class="mt-1 opacity-90">Avaliação do padrão de caminhada.</p>
+                </a>
+
+                <!-- Botão 2: Motor -->
+                <a href="motor.html" class="block p-6 bg-gradient-to-r from-green-400 to-teal-500 text-white rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 btn-transition text-center">
+                    <h2 class="text-2xl font-bold">Sistema Motor</h2>
+                    <p class="mt-1 opacity-90">Análise de força e tônus muscular.</p>
+                </a>
+                
+                <!-- Botão 3: Sensibilidade -->
+                <a href="sensibilidade.html" class="block p-6 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 btn-transition text-center">
+                    <h2 class="text-2xl font-bold">Sensibilidade</h2>
+                    <p class="mt-1 opacity-90">Avaliação tátil, térmica e dolorosa.</p>
+                </a>
+
+                <!-- Botão 4: Reflexos -->
+                <a href="reflexos.html" class="block p-6 bg-gradient-to-r from-orange-400 to-red-500 text-white rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 btn-transition text-center">
+                    <h2 class="text-2xl font-bold">Reflexos</h2>
+                    <p class="mt-1 opacity-90">Teste dos reflexos profundos e superficiais.</p>
+                </a>
+
+                <!-- Botão 5: Nervos Cranianos -->
+                <a href="nervoscranianos.html" class="block p-6 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg shadow-lg hover:shadow-2xl transform hover:-translate-y-1 btn-transition text-center sm:col-span-2">
+                    <h2 class="text-2xl font-bold">Nervos Cranianos</h2>
+                    <p class="mt-1 opacity-90">Exame dos 12 pares de nervos.</p>
+                </a>
+
+            </div>
+        </main>
+
+        <!-- Rodapé -->
+        <footer class="text-center mt-10 md:mt-12">
+            <p class="text-gray-500 dark:text-gray-400">Desenvolvido por <a href="https://github.com/migabd" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline">migabd</a>.</p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
+
+
